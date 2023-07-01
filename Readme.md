@@ -6,6 +6,7 @@ PetaWSRename-QR adalah project yang digunakan untuk melakukan rename peta WS men
 - [Pengenalan](#pengenalan)
 - [Fitur](#fitur)
 - [Instalasi](#instalasi)
+- [Build](#build)
 - [Penggunaan](#penggunaan)
 - [Kontribusi](#kontribusi)
 - [Lisensi](#lisensi)
@@ -28,10 +29,19 @@ tanpa harus mengerti code. Tujuan dari aplikasi ini adalah melakukan rename peta
 
 ```pip install -r packages.txt```
 
-3. Jalankan aplikasi 
+3. Jalankan aplikasi
+
+## Build
+1. Install pyinstaller
+
+```pip install pyinstaller```
+
+2. Build aplikasi 
+
+```pyinstaller -F main.py```
 
 ## Penggunaan
-Place the files you want to rename and their corresponding QR codes in the same directory.
+Download aplikasi pada release page
 
 ## Kontribusi
 Kontribusi untuk PetaWSRename-QR sangatlah diperbolehkan! Jika Anda menemukan masalah atau memiliki ide perbaikan, silakan buka issue atau ajukan pull request di [GitHub repository](https://github.com/Jenusdy/PetaWSRename-QR).

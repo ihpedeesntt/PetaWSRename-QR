@@ -164,7 +164,7 @@ class PetaWSRename(QWidget):
             msg.exec_()
             return
 
-        types = ('*.jpg', '*.JPEG', '*.jpeg', '*.JPG')
+        types = ('*.jpg', '*.JPEG', '*.jpeg')
         list_images = []
         for files in types:
             list_images.extend(glob(path_input + os.path.sep + files))
@@ -185,7 +185,7 @@ class PetaWSRename(QWidget):
         for i in sorted(list_images):
             counter = counter + 1
             file_name, file_extension = self.get_file_extension(i)
-            file_name = file_name.split('/')[-1]
+            file_name = file_name.split(os.sep)[-1]
 
             self.prosesSekarang.setText(file_name)
             self.progressBar.setValue(counter)
