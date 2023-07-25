@@ -52,8 +52,18 @@ Kontribusi untuk PetaWSRename-QR sangatlah diperbolehkan! Jika Anda menemukan ma
 Ketika berkontribusi, harap pastikan untuk mengikuti kode etik dan memberikan informasi detail tentang perubahan yang Anda lakukan atau laporan bug.
 
 ## Lisensi
-Projek ini dilisensikan di bawah [MIT License](LICENSE). Anda bebas menggunakan, mengubah, dan mendistribusikan kode ini untuk tujuan komersial maupun non-komersial.
+```xml
+Copyright 2023 Jenusdy
 
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
+    http://www.apache.org/licenses/LICENSE-2.0
 
-
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+```
