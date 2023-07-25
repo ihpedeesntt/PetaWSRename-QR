@@ -1,5 +1,6 @@
-# PetaWSRename-QR
+[![Github All Releases](https://img.shields.io/github/downloads/Jenusdy/PetaWSRename-QR/total.svg)]()
 
+# PetaWSRename-QR
 PetaWSRename-QR adalah project yang digunakan untuk melakukan rename peta WS menggunakan QR Code yang ada pada hasil layout peta
 
 ## Daftar Isi
