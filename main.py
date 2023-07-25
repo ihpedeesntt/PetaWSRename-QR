@@ -221,7 +221,6 @@ class PetaWSRename(QWidget):
         self.progressBar.setValue(len(self.completed_jobs))
 
         if len(self.completed_jobs) == len(list_images):
-            self.completed_jobs = sorted(self.completed_jobs, key=lambda x: x[0])
             self.createRekap()
             self.prosesBtn.setEnabled(True)
             self.prosesSekarang.setText("Proses selesai silahkan cek folder output!")
