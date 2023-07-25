@@ -46,6 +46,8 @@ tanpa harus mengerti code. Tujuan dari aplikasi ini adalah melakukan rename peta
 ## Penggunaan
 Download aplikasi pada release page
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/QWTBopsebIE/0.jpg)](https://www.youtube.com/watch?v=QWTBopsebIE)
+
 ## Kontribusi
 Kontribusi untuk PetaWSRename-QR sangatlah diperbolehkan! Jika Anda menemukan masalah atau memiliki ide perbaikan, silakan buka issue atau ajukan pull request di [GitHub repository](https://github.com/Jenusdy/PetaWSRename-QR).
 
