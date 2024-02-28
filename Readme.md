@@ -3,7 +3,7 @@
 [![Latest build](https://img.shields.io/github/v/release/Jenusdy/PetaWSRename-QR?color=orange&include_prereleases&label=latest%20build)](https://github.com/JetBrains/compose-multiplatform/releases)
 
 # PetaWSRename-QR
-PetaWSRename-QR adalah project yang digunakan untuk melakukan rename peta WS menggunakan QR Code yang ada pada hasil layout peta
+PetaWSRename-QR adalah project yang digunakan untuk melakukan rename peta WS menggunakan OCR dan QR Code yang ada pada hasil layout peta
 
 ## Daftar Isi
 - [Pengenalan](#pengenalan)
@@ -16,10 +16,10 @@ PetaWSRename-QR adalah project yang digunakan untuk melakukan rename peta WS men
 
 ## Pengenalan
 PetaWSRename-QR adalah aplikasi desktop yang dikembangkan menggunakan PyQT5 untuk memudahkan user menggunakan aplikasi 
-tanpa harus mengerti code. Tujuan dari aplikasi ini adalah melakukan rename peta WS menggunakan QR Code yang ada pada hasil layout peta
+tanpa harus mengerti code. Tujuan dari aplikasi ini adalah melakukan rename peta WS menggunakan QR Code atau OCR yang ada pada hasil layout peta
 
 ## Fitur
-- Melakukan rename pada peta WS menggunakan QR
+- Melakukan rename pada peta WS menggunakan OCR atau QR
 - Mendapatkan report hasil rename peta WS
 - Hasil rename sudah dalam folder terstruktur dari kabupaten hingga desa
 
@@ -32,7 +32,7 @@ tanpa harus mengerti code. Tujuan dari aplikasi ini adalah melakukan rename peta
 
 ```pip install -r packages.txt```
 
-3. Jalankan aplikasi
+3. Untuk package mengenai OCR dapat didownload dan diinstall di [Tesseract](https://github.com/tesseract-ocr/tesseract)
 
 ## Build
 1. Install pyinstaller
@@ -41,7 +41,8 @@ tanpa harus mengerti code. Tujuan dari aplikasi ini adalah melakukan rename peta
 
 2. Build aplikasi 
 
-```pyinstaller -F main.py```
+```python -m PyInstaller -F main.py --onefile --windowed```
+
 
 ## Penggunaan
 Download aplikasi pada release page

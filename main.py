@@ -4,17 +4,24 @@ import pyzbar.pyzbar as pyzbar
 from PyQt5 import QtGui
 from PyQt5.QtCore import QObject, pyqtSignal as Signal, QRunnable, pyqtSlot as Slot, QThreadPool
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QDesktopWidget, QPushButton, QMessageBox, QLineEdit, \
-    QLabel, QFileDialog, QProgressBar
+    QLabel, QFileDialog, QProgressBar, QRadioButton
 from pathlib import Path
 import sys
-from glob import glob
 import os
 import pandas as pd
+import pytesseract
+import cv2
+from glob import glob
+import re
 
 path_input = ''
 path_output = ''
 list_images = []
 list_log = []
+metode = 0
+
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'Tesseract-OCR\tesseract.exe'
 
 
 class Signals(QObject):
@@ -38,6 +45,29 @@ class Worker(QRunnable):
         image = cv2.imread(image_path)
         qr_codes = pyzbar.decode(image)
         return qr_codes
+
+    def detect_ocr_code(self, image_path):
+        img = cv2.imread(image_path)
+
+        panjang1 = img.shape[0]
+        lebar1 = img.shape[1]
+
+        if panjang1 > lebar1:
+            img = cv2.resize(img, (904, 1280))
+            panjang1 = img.shape[0]
+            lebar1 = img.shape[1]
+            panjang0 = round(panjang1 - panjang1 * 96 / 100)
+            lebar0 = round(lebar1 - lebar1 * 30 / 100)
+        else:
+            img = cv2.resize(img, (1280, 904))
+            panjang1 = img.shape[0]
+            lebar1 = img.shape[1]
+            panjang0 = round(panjang1 - panjang1 * 95 / 100)
+            lebar0 = round(lebar1 - lebar1 * 20 / 100)
+
+        output = img[0:panjang0, lebar0:lebar1 - 1]
+        text = pytesseract.image_to_string(output)
+        return text
 
     def create_folder_if_not_exists(self, folder_path):
         if os.path.exists(folder_path):
@@ -65,14 +95,34 @@ class Worker(QRunnable):
         file_name, file_extension = self.get_file_extension(self.n)
         file_name = file_name.split(os.sep)[-1]
 
-        qr_codes = self.detect_qr_code(self.n)
+        if metode == 2:
+            qr_codes = self.detect_qr_code(self.n)
 
-        result = []
-        if len(qr_codes) == 0:
-            result = [file_name, "Gagal", "Tidak ada QR ditemukan!"]
-        else:
-            for qr_code in qr_codes:
-                idsls = qr_code.data.decode()
+            result = []
+            if len(qr_codes) == 0:
+                result = [file_name, "", "Gagal", "Tidak ada QR ditemukan!"]
+            else:
+                for qr_code in qr_codes:
+                    idsls = qr_code.data.decode()
+                    idkab = idsls[:4]
+                    kdkec = idsls[4:7]
+                    kddesa = idsls[7:10]
+
+                    path_folder_destination = path_output + os.path.sep + idkab + os.path.sep + kdkec + os.path.sep + \
+                                              kddesa
+                    path_file_destination = path_folder_destination + os.path.sep + idsls + file_extension
+                    self.create_folder_if_not_exists(path_folder_destination)
+                    self.copy_and_rename_file(source_file_path=self.n, destination_file_path=path_file_destination)
+                    result = [file_name, idsls, "Berhasil", "Berhasil melakukan rename file!"]
+            self.signals.completed.emit(result)
+
+        elif metode == 1:
+            text = self.detect_ocr_code(self.n)
+            if text != "":
+                nama_file = re.findall(r'\d+', text)
+                nama_file = "".join(nama_file)
+
+                idsls = nama_file
                 idkab = idsls[:4]
                 kdkec = idsls[4:7]
                 kddesa = idsls[7:10]
@@ -82,9 +132,12 @@ class Worker(QRunnable):
                 path_file_destination = path_folder_destination + os.path.sep + idsls + file_extension
                 self.create_folder_if_not_exists(path_folder_destination)
                 self.copy_and_rename_file(source_file_path=self.n, destination_file_path=path_file_destination)
-                result = [file_name, "Berhasil", "Berhasil melakukan rename file!"]
 
-        self.signals.completed.emit(result)
+                result = [file_name, nama_file, "Berhasil", "Berhasil melakukan rename file!"]
+                self.signals.completed.emit(result)
+            else:
+                result = [file_name, "", "Gagal", "Tidak ada nomor SLS ditemukan!"]
+                self.signals.completed.emit(result)
 
 
 class PetaWSRename(QWidget):
@@ -108,19 +161,33 @@ class PetaWSRename(QWidget):
         self.prosesSekarang = QLabel()
         self.prosesSekarang.setText("Belum ada proses")
 
-        layout.addWidget(QLabel('Folder Input'), 1, 0, 1, 1)
-        layout.addWidget(self.dir_input_name, 1, 1, 1, 1)
-        layout.addWidget(dir_btn_input, 1, 2, 1, 1)
-        layout.addWidget(QLabel('Folder Output'), 2, 0, 1, 1)
-        layout.addWidget(self.dir_output_name, 2, 1, 1, 1)
-        layout.addWidget(dir_btn_output, 2, 2, 1, 1)
-        layout.addWidget(QLabel('Proses'), 3, 0, 1, 1)
-        layout.addWidget(self.prosesSekarang, 3, 1, 1, 2)
-        layout.addWidget(QLabel('Progress'), 4, 0, 1, 1)
-        layout.addWidget(self.progressBar, 4, 1, 1, 2)
-        layout.addWidget(self.prosesBtn, 5, 2, 1, 1)
+        layout.addWidget(QLabel('Metode '), 1, 0, 1, 1)
+        cs1 = QRadioButton("OCR", self)
+        layout.addWidget(cs1, 2, 0, 1, 2)
 
-        self.setWindowTitle('PetaWS-QRCodeReader (v1.0.1)')
+        cs1.toggled.connect(self.change_metode_ocr)
+
+        cs2 = QRadioButton("QR-Code", self)
+        layout.addWidget(cs2, 2, 1, 1, 1)
+        cs2.toggled.connect(self.change_metode_qr)
+
+        layout.addWidget(QLabel('Folder Input'), 3, 0, 1, 1)
+        layout.addWidget(self.dir_input_name, 3, 1, 1, 1)
+        layout.addWidget(dir_btn_input, 3, 2, 1, 1)
+
+        layout.addWidget(QLabel('Folder Output'), 4, 0, 1, 1)
+        layout.addWidget(self.dir_output_name, 4, 1, 1, 1)
+        layout.addWidget(dir_btn_output, 4, 2, 1, 1)
+
+        layout.addWidget(QLabel('Proses'), 5, 0, 1, 1)
+        layout.addWidget(self.prosesSekarang, 5, 1, 1, 2)
+
+        layout.addWidget(QLabel('Progress'), 6, 0, 1, 1)
+        layout.addWidget(self.progressBar, 6, 1, 1, 2)
+
+        layout.addWidget(self.prosesBtn, 7, 2, 1, 1)
+
+        self.setWindowTitle('PetaWS-QRCodeReader (v1.0.2)')
         self.setWindowIcon(QtGui.QIcon('resource/sweety.ico'))
         self.center()
         self.show()
@@ -142,6 +209,14 @@ class PetaWSRename(QWidget):
             path_output = str(path)
             self.dir_output_name.setText(path_output)
             print(path_output)
+
+    def change_metode_ocr(self):
+        global metode
+        metode = 1
+
+    def change_metode_qr(self):
+        global metode
+        metode = 2
 
     def center(self):
         qr = self.frameGeometry()
@@ -171,6 +246,15 @@ class PetaWSRename(QWidget):
 
     def proses(self):
         self.restart()
+
+        if metode == 0:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Belum memilih metode")
+            msg.setInformativeText('Harap pilih metode terlebih dahulu')
+            msg.setWindowTitle("Galat")
+            msg.exec_()
+            return
 
         if path_input == '' or path_output == '':
             msg = QMessageBox()
@@ -228,6 +312,7 @@ class PetaWSRename(QWidget):
     def createRekap(self):
         df_result = pd.DataFrame(self.completed_jobs, columns=[
             "Nama File",
+            "Nama Hasil",
             "Status",
             "Info"
         ])
