@@ -1,17 +1,19 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 
+
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[],
-    datas=[],
-    hiddenimports=[],
+    binaries=[opencv_binaries],
+    datas=[('Tesseract-OCR', 'Tesseract-OCR')],
+    hiddenimports=['cv2', 'pyzbar.pyzbar', 'pandas._libs.tslibs.timedeltas', 'pandas._libs.tslibs.timestamps', 'pandas._libs.tslibs.nattype'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
     noarchive=False,
+    optimize=0,
 )
 pyz = PYZ(a.pure)
 
@@ -21,7 +23,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='main',
+    name='PetaWSRename',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

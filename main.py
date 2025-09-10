@@ -21,8 +21,17 @@ list_log = []
 metode = 0
 
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-pytesseract.pytesseract.tesseract_cmd = r'Tesseract-OCR\tesseract.exe'
+if getattr(sys, 'frozen', False):
+    # Running in a PyInstaller bundle
+    base_path = sys._MEIPASS
+else:
+    # Running in a normal Python environment
+    base_path = os.path.abspath(".")
 
+tesseract_path = os.path.join(base_path, 'Tesseract-OCR', 'tesseract.exe')
+
+# Set the path for pytesseract
+pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 class Signals(QObject):
     completed = Signal(list)
@@ -103,7 +112,8 @@ class Worker(QRunnable):
                 result = [file_name, "", "Gagal", "Tidak ada QR ditemukan!"]
             else:
                 for qr_code in qr_codes:
-                    idsls = qr_code.data.decode()
+                    qr_result = qr_code.data.decode()
+                    idsls = qr_result[:14]
                     idkab = idsls[:4]
                     kdkec = idsls[4:7]
                     kddesa = idsls[7:10]

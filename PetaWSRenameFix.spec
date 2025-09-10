@@ -1,34 +1,38 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-
-block_cipher = None
+# Collect all PyQt5 hidden modules and data files
 
 
 a = Analysis(
-    ['myscript.py'],
-    pathex=[],
-    binaries=[],
-    datas=[],
-    hiddenimports=[],
+    ['main.py'],
+    pathex=['.\\.venv\\Lib\\site-packages\\'],
+    binaries=[
+        ('libiconv.dll', '.'),
+        ('libzbar-64.dll', '.'),
+    ],
+    datas=[
+        ('Tesseract-OCR', 'Tesseract-OCR'),
+    ],
+    hiddenimports=[
+        'PyQt5.sip', 
+    ] ,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
-    cipher=block_cipher,
     noarchive=False,
+    optimize=0,
 )
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+pyz = PYZ(a.pure)
 
 exe = EXE(
     pyz,
     a.scripts,
     a.binaries,
-    a.zipfiles,
     a.datas,
     [],
-    name='myscript',
+    name='PetaWSRenameFix',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

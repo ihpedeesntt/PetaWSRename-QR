@@ -19,3 +19,6 @@ env/
 # Ignore system-specific files
 .DS_Store
 Thumbs.db
+
+Tesseract-OCR
+Tesseract-OCR.zip
