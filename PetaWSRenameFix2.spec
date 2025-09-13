@@ -1,11 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-
-
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[opencv_binaries],
+    binaries=[ 
+        ('libiconv.dll', '.'),
+        ('libzbar-64.dll', '.'),], 
     datas=[('Tesseract-OCR', 'Tesseract-OCR')],
     hiddenimports=['cv2', 'pyzbar.pyzbar', 'pandas._libs.tslibs.timedeltas', 'pandas._libs.tslibs.timestamps', 'pandas._libs.tslibs.nattype'],
     hookspath=[],

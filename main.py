@@ -121,9 +121,18 @@ class Worker(QRunnable):
                     path_folder_destination = path_output + os.path.sep + idkab + os.path.sep + kdkec + os.path.sep + \
                                               kddesa
                     path_file_destination = path_folder_destination + os.path.sep + idsls + file_extension
+
+                    count = 1
+                    while os.path.exists(path_file_destination):
+                        new_idsls = f"{idsls}_{count}"
+                        path_file_destination = path_folder_destination + os.path.sep + new_idsls + file_extension
+                        count += 1
+                    
                     self.create_folder_if_not_exists(path_folder_destination)
                     self.copy_and_rename_file(source_file_path=self.n, destination_file_path=path_file_destination)
-                    result = [file_name, idsls, "Berhasil", "Berhasil melakukan rename file!"]
+                    final_idsls = os.path.splitext(os.path.basename(path_file_destination))[0]
+
+                    result = [file_name, final_idsls, "Berhasil", "Berhasil melakukan rename file!"]
             self.signals.completed.emit(result)
 
         elif metode == 1:
